@@ -37,7 +37,7 @@
           round
           size="small"
           color="linear-gradient(to right, #ee4635, #f09b21)"
-          @click="sell"
+          @click="sellBtn"
         >出售</van-button>
       </div>
     </div>
@@ -76,6 +76,9 @@ export default {
   methods: {
     clickBtn(val) {
       this.clickBtnActive = val
+    },
+    sellBtn() {
+
     }
   }
 };
