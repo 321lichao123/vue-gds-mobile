@@ -34,7 +34,9 @@ const mutations={
 // 准备state
 const state={
     user:getItem(USER_KEY),
-    cachePages:['layout']
+    cachePages:['layout'],
+    token: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsYXlTaGVuIiwianRpIjoiMzcxMTI3OTQzIiwic3ViIjoiMzcxMTI3OTQzIiwiaWF0IjoxNjc1MTcwMDY4LCJleHAiOjE2NzUyNTY0Njh9.u_BoEcAMbCZ4rrmgoUnhRxicgV_TmoioirKb_j7HvHY',
+    uid: '371127943'
 }
 
 const getters={

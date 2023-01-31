@@ -10,19 +10,19 @@
           <div>
             <div class="items">今日参考价</div>
             <div>
-              <span class="today-price">13.41</span>
+              <span class="today-price">{{dayPriceObj.averagePrice || 0}}</span>
               <span class="unit">GX</span>
             </div>
           </div>
           <div>
             <div class="items">
               <span>昨日价格</span>
-              <span class="today-price">13.41</span>
+              <span class="today-price">{{dayPriceObj.yesterdayPrice || 0}}</span>
               <span class="unit">GX</span>
             </div>
             <div>
               <span style="margin-right: 5px;">涨幅</span>
-              <span class="today-price">4.71</span>
+              <span class="today-price">{{dayPriceObj.upRatio || 0}}</span>
               <span class="unit">%</span>
             </div>
           </div>
@@ -30,11 +30,11 @@
       </div>
       <div class="today-trade-total">
         <div>
-          <div class="trade-total">13734</div>
+          <div class="trade-total">{{dayPriceObj.exchangeNum || 0}}</div>
           <div>今日交易量</div>
         </div>
         <div>
-          <div class="trade-total">3054217</div>
+          <div class="trade-total">{{dayPriceObj.buyNum || 0}}</div>
           <div>当前购买量</div>
         </div>
       </div>
@@ -47,13 +47,15 @@
           class="btn btn1"
           type="primary"
           size='small'
-          color='background-image: linear-gradient(to right, #52a856 , #46bec8)'
+          color='linear-gradient(to right, #52a856 , #46bec8)'
+          @click="buySellClick(0)"
         >买入</van-button>
         <van-button
-          class="btn btn2"
+          class="btn"
           type="primary"
           size='small'
-          color='background-image: linear-gradient(to right, #ee4635, #f09b21)'
+          color='linear-gradient(to right, #ee4635, #f09b21)'
+          @click="buySellClick(1)"
         >卖出</van-button>
       </div>
     </div>
@@ -71,31 +73,123 @@
           />
         </van-tab>
         <van-tab title="出售列表">
-          <buy-sell-list
-            :type="active"
-          />
+          <van-empty description="暂未开放" />
         </van-tab>
       </van-tabs>
     </div>
+    <van-dialog
+      show-cancel-button
+      v-model="buySellShow"
+      :title="title"
+      @confirm="confirm"
+      @cancel="cancel"
+    >
+    <van-form>
+      <van-field label="数量">
+        <template #input>
+          <van-stepper v-model="from.totalNum" @change="calculateTotal" />
+        </template>
+      </van-field>
+      <van-field
+        type="number"
+        label="单价"
+        v-model="from.eachImt"
+        @change="calculateTotal"
+      />
+      <van-field
+        type="number"
+        label="总价"
+        readonly
+        v-model="from.az"
+      />
+    </van-form>
+    </van-dialog>
   </div>
 </template>
 <script>
-import { Button, Tab, Tabs } from 'vant';
+import { Button, Tab, Tabs, Empty, Dialog, Form, Field, Stepper } from 'vant';
 import buySellList from './buySellList'
+import { getExchangeInfoList, getTopShow, queryUserInfo, publishExchangeInfo } from '@/request/api'
+import { mapState } from 'vuex'
 export default {
   components: {
     [Button.name]: Button,
     [Tab.name]: Tab,
     [Tabs.name]: Tabs,
+    [Empty.name]: Empty,
+    [Dialog.name]: Dialog,
+    [Form.name]: Form,
+    [Field.name]: Field,
+    [Stepper.name]: Stepper,
     buySellList
   },
   data() {
     return {
-      active: 2
+      active: 2,
+      dayPriceObj: {},
+      exchangeAz: 0,
+      buySellShow: false,
+      type: 1,
+      from: {
+        totalNum: 0,
+        eachImt: 0,
+        az: 0
+      }
     };
   },
-  created() {},
-  methods: {}
+  computed: {
+    ...mapState(['token', 'uid']),
+    title() {
+      return this.type === 0 ? '买入' : '卖出'
+    }
+  },
+  created() {
+    this.getData()
+  },
+  methods: {
+    getData() {
+      getTopShow({}).then(res => {
+        this.dayPriceObj = {...res.data}
+      })
+      // queryUserInfo({token: this.token, uid: this.uid}).then(res => {
+      //   this.exchangeAz = res.data.exchangeAz
+      // })
+      getExchangeInfoList({type: 0, numType: 0, token: this.token}).then(res => {
+        console.log(res, "===111")
+      })
+    },
+    buySellClick(type) {
+      this.type = type
+      this.buySellShow = true
+    },
+    calculateTotal() {
+      let {totalNum, eachImt, az} = this.from
+      az = totalNum * eachImt
+      this.from.az = az
+    },
+    cancel() {
+      this.from = {
+        totalNum: 0,
+        eachImt: 0,
+        az: 0
+      }
+    },
+    async confirm() {
+      let params = {
+        token: this.token,
+        type: this.type,
+        uid: this.uid,
+      }
+      params = Object.assign(params, {...this.from})
+      await publishExchangeInfo(params).then(res => {
+        console.log(res, "=====11111")
+        
+      })
+      await getExchangeInfoList({type: 0, numType: 0, token: this.token}).then(res => {
+        console.log(res, "=====2222")
+      })
+    }
+  }
 };
 </script>
 <style lang="less" scoped>
@@ -131,6 +225,7 @@ export default {
 }
 .today-price {
   font-size: 30px;
+  margin: 0 5px;
 }
 .today-trade-total {
   display: flex;
@@ -169,11 +264,10 @@ export default {
 }
 .btn1 {
   margin-right: 5%;
-  background-image: linear-gradient(to right, #52a856 , #46bec8)
 }
-.btn2 {
-  background-image: linear-gradient(to right, #ee4635, #f09b21)
-}
+// .btn2 {
+//   background-image: linear-gradient(to right, #ee4635, #f09b21)
+// }
 .van-hairline--top-bottom::after {
   border-width: 0 0 1px 0;
 }
