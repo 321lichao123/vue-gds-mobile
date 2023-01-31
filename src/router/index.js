@@ -6,15 +6,20 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
     routes: [
-        {
-            path: '/',
-            redirect: '/trade',
-        },
-        {
-            path: '/trade',
-            name: 'trade',
-            component: () => import('@/views/trade/trade.vue')
-          },
+        // {
+        //     path: '/',
+        //     redirect: '/trade',
+        // },
+        // {
+        //     path: '/trade',
+        //     name: 'trade',
+        //     component: () => import('@/views/trade/trade.vue')
+        // },
+        // {
+        //     path: '/userprofile',
+        //     name: 'userprofile',
+        //     component: () => import('@/views/newUserprofile/userprofile.vue')
+        // },
         // {
         //     path: '/login',
         //     name: 'login',
@@ -81,39 +86,39 @@ const router = new VueRouter({
         //     component: () => import('@/views/usercollect'),
         //     props: true
         // },
-        // {
-        //     path: '/',
-        //     meta: {
-        //         requireAuth: false
-        //     },
-        //     component: () => import('@/views/layout'),
-        //     children: [{
-        //             path: '', //默认子路由
-        //             component: () => import('@/views/home')
-        //         },
-        //         {
-        //             path: '/todolist',
-        //             meta: {
-        //                 requireAuth: false
-        //             },
-        //             component: () => import('@/views/todolist')
-        //         },
-        //         {
-        //             path: '/weather',
-        //             meta: {
-        //                 requireAuth: false
-        //             },
-        //             component: () => import('@/views/weather')
-        //         },
-        //         {
-        //             path: '/my',
-        //             meta: {
-        //                 requireAuth: false
-        //             },
-        //             component: () => import('@/views/my')
-        //         }
-        //     ]
-        // }
+        {
+            path: '/',
+            meta: {
+                requireAuth: false
+            },
+            component: () => import('@/views/layout'),
+            children: [{
+                    path: '', //默认子路由
+                    component: () => import('@/views/trade/trade.vue')
+                },
+                // {
+                //     path: '/todolist',
+                //     meta: {
+                //         requireAuth: false
+                //     },
+                //     component: () => import('@/views/todolist')
+                // },
+                // {
+                //     path: '/weather',
+                //     meta: {
+                //         requireAuth: false
+                //     },
+                //     component: () => import('@/views/weather')
+                // },
+                {
+                    path: '/userprofile',
+                    meta: {
+                        requireAuth: false
+                    },
+                    component: () => import('@/views/newUserprofile/userprofile')
+                }
+            ]
+        }
     ]
 })
 

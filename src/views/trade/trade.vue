@@ -21,7 +21,7 @@
               <span class="unit">GX</span>
             </div>
             <div>
-              <span>涨幅</span>
+              <span style="margin-right: 5px;">涨幅</span>
               <span class="today-price">4.71</span>
               <span class="unit">%</span>
             </div>
@@ -58,7 +58,13 @@
       </div>
     </div>
     <div>
-      <van-tabs v-model="active">
+      <van-tabs
+        v-model="active"
+        background="#f4f4f4"
+        line-width="50%"
+        title-active-color="#626aa4"
+        title-inactive-color="#999999"
+      >
         <van-tab title="购买列表">
           <buy-sell-list
             :type="active"

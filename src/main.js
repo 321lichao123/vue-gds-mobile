@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router/index';
 import store from './store';
+import './assets/fontIcon/iconfont.css'
 
 // 自动设置rem基准值
 import 'amfe-flexible'
