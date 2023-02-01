@@ -20,19 +20,19 @@ const router = new VueRouter({
         //     name: 'userprofile',
         //     component: () => import('@/views/newUserprofile/userprofile.vue')
         // },
-        // {
-        //     path: '/login',
-        //     name: 'login',
-        //     meta: {
-        //         requireAuth: false
-        //     },
-        //     component: () => import('@/views/login')
-        // },
-        // {
-        //     path: '/register',
-        //     name: 'register',
-        //     component: () => import('@/views/register')
-        // },
+        {
+            path: '/login',
+            name: 'login',
+            meta: {
+                requireAuth: false
+            },
+            component: () => import('@/views/login')
+        },
+        {
+            path: '/register',
+            name: 'register',
+            component: () => import('@/views/register')
+        },
         // {
         //     path: '/search',
         //     name: 'search',

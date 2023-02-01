@@ -6,7 +6,7 @@ import router from '@/router'
 
 
 if (process.env.NODE_ENV == 'development') {
-  axios.defaults.baseURL = 'http://117.50.163.32:8080/';
+  axios.defaults.baseURL = 'http://117.50.163.32:8081/';
 } else if (process.env.NODE_ENV == 'debug') {
   axios.defaults.baseURL = 'https://www.ceshi.com';
 } else if (process.env.NODE_ENV == 'production') {
@@ -28,6 +28,7 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   response => {
+    console.log(response, '----response');
     // 如果返回的状态码为200，说明接口请求成功，可以正常拿到数据     
     // 否则的话抛出错误
     if (response.status === 200) {
