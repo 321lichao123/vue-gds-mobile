@@ -12,73 +12,103 @@
         @click="clickBtn(item.key)" 
       />
     </div>
-    <div class="goods-list">
+    <div class="goods-list" v-for="(item, index) in dataSource" :key="index">
       <div class="goods-left">
-        <div class="goods-code goods-title">076</div>
+        <div class="goods-code goods-title">{{uid.slice(-4)}}</div>
         <div class="goods-infos">
           <div>
-            <div class="goods-count">15</div>
+            <div class="goods-count">{{item.totalNum || 0}}</div>
             <div class="goods-title">订单数量(GT)</div>
           </div>
           <div>
-            <div class="goods-count">14.08</div>
+            <div class="goods-count">{{item.eachImt || 0}}</div>
             <div class="goods-title">单价</div>
           </div>
           <div>
-            <div class="goods-count">211.20</div>
+            <div class="goods-count">{{item.actualPayImt || 0}}</div>
             <div class="goods-title">预计金额(GX)</div>
           </div>
         </div>
       </div>
       <div class="sell-area">
-        <div class="goods-title">成交: <span>4</span></div>
+        <div class="goods-title">成交: <span>{{item.dealAZ || 0}}</span></div>
         <van-button
           class="sell-btn"
           round
           size="small"
           color="linear-gradient(to right, #ee4635, #f09b21)"
-          @click="sellBtn"
+          @click="sellBtn(item)"
         >出售</van-button>
       </div>
     </div>
+    <sellDialog 
+      :btnType="btnType"
+      :buySellShow.sync="buySellShow"
+      :sellMaxNum="sellMaxNum"
+    />
   </div>
 </template>
 <script>
 import { Button } from 'vant';
+import { getExchangeInfoList } from '@/request/api'
+import { mapState } from 'vuex'
+import sellDialog from './sellDialog'
 export default {
   components: {
     [Button.name]: Button,
+    sellDialog
   },
   data() {
     return {
-      clickBtnActive: 1,
+      numType: 0,
       btnsArr: [
-        {key: 1, title: '1 ~ 20'},
-        {key: 2, title: '21 ~ 50'},
-        {key: 3, title: '51 ~ 300'},
-        {key: 4, title: '300以上'},
-      ]
+        {key: 0, title: '1 ~ 20'},
+        {key: 1, title: '21 ~ 50'},
+        {key: 2, title: '51 ~ 300'},
+        {key: 3, title: '300以上'},
+      ],
+      dataSource: [],
+      buySellShow: false,
+      sellMaxNum: 0
     };
   },
+  props: ['btnType'],
   computed: {
+    ...mapState(['token', 'uid']),
     changeBtnColor() {
       return function(val) {
-        return this.clickBtnActive === val ? '#2294f2' : '#dfdfdf'
+        return this.numType === val ? '#2294f2' : '#dfdfdf'
       }
     },
     setBtnTextColor() {
       return function(val) {
-        return {color: this.clickBtnActive === val ? '#dbfbfd' : '#686868'}
+        return {color: this.numType === val ? '#dbfbfd' : '#686868'}
       }
     }
   },
-  created() {},
+  created() {
+    this.getExchangeInfoListMethod()
+  },
   methods: {
     clickBtn(val) {
-      this.clickBtnActive = val
+      this.numType = val
+      this.getExchangeInfoListMethod()
     },
-    sellBtn() {
-
+    sellBtn(record) {
+      this.sellMaxNum = record.totalNum
+      this.buySellShow = true
+    },
+    getExchangeInfoListMethod() {
+      let params = {
+        type: this.btnType,
+        numType: this.numType,
+        token: this.token
+      }
+      return getExchangeInfoList(params).then(res => {
+        if(res.status === 1000) {
+          this.dataSource = res.data
+        }
+      })
     }
   }
 };

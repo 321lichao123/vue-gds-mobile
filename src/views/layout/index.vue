@@ -11,7 +11,7 @@
                 </template>
                 置换中心
             </van-tabbar-item>
-            <van-tabbar-item to='/'>
+            <van-tabbar-item to='/notice'>
                 <template #icon>
                     <i class="iconfont icon-gonggao"></i>
                 </template>

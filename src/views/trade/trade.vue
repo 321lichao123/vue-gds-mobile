@@ -59,57 +59,38 @@
         >卖出</van-button>
       </div>
     </div>
-    <div>
-      <van-tabs
-        v-model="active"
-        background="#f4f4f4"
-        line-width="50%"
-        title-active-color="#626aa4"
-        title-inactive-color="#999999"
-      >
-        <van-tab title="购买列表">
-          <buy-sell-list
-            :type="active"
-          />
-        </van-tab>
-        <van-tab title="出售列表">
-          <van-empty description="暂未开放" />
-        </van-tab>
-      </van-tabs>
+    <div class="goods-list">
+      <van-sticky>
+        <van-tabs
+          v-model="active"
+          background="#f4f4f4"
+          line-width="50%"
+          title-active-color="#626aa4"
+          title-inactive-color="#999999"
+        >
+          <van-tab title="购买列表">
+            <buy-sell-list
+              ref="buySellList"
+              :btnType="btnType"
+            />
+          </van-tab>
+          <van-tab title="出售列表">
+            <van-empty description="暂未开放" />
+          </van-tab>
+        </van-tabs>
+      </van-sticky>
     </div>
-    <van-dialog
-      show-cancel-button
-      v-model="buySellShow"
-      :title="title"
-      @confirm="confirm"
-      @cancel="cancel"
-    >
-    <van-form>
-      <van-field label="数量">
-        <template #input>
-          <van-stepper v-model="from.totalNum" @change="calculateTotal" />
-        </template>
-      </van-field>
-      <van-field
-        type="number"
-        label="单价"
-        v-model="from.eachImt"
-        @change="calculateTotal"
-      />
-      <van-field
-        type="number"
-        label="总价"
-        readonly
-        v-model="from.az"
-      />
-    </van-form>
-    </van-dialog>
+    <sellDialog
+      :btnType="btnType"
+      :buySellShow.sync="buySellShow"
+    />
   </div>
 </template>
 <script>
-import { Button, Tab, Tabs, Empty, Dialog, Form, Field, Stepper } from 'vant';
+import { Button, Tab, Tabs, Empty,  Toast, Sticky } from 'vant';
 import buySellList from './buySellList'
-import { getExchangeInfoList, getTopShow, queryUserInfo, publishExchangeInfo } from '@/request/api'
+import sellDialog from './sellDialog'
+import { getTopShow, queryUserInfo, publishExchangeInfo } from '@/request/api'
 import { mapState } from 'vuex'
 export default {
   components: {
@@ -117,11 +98,10 @@ export default {
     [Tab.name]: Tab,
     [Tabs.name]: Tabs,
     [Empty.name]: Empty,
-    [Dialog.name]: Dialog,
-    [Form.name]: Form,
-    [Field.name]: Field,
-    [Stepper.name]: Stepper,
-    buySellList
+    [Toast.name]: Toast,
+    [Sticky.name]: Sticky,
+    buySellList,
+    sellDialog
   },
   data() {
     return {
@@ -129,19 +109,11 @@ export default {
       dayPriceObj: {},
       exchangeAz: 0,
       buySellShow: false,
-      type: 1,
-      from: {
-        totalNum: 0,
-        eachImt: 0,
-        az: 0
-      }
+      btnType: 0,
     };
   },
   computed: {
     ...mapState(['token', 'uid']),
-    title() {
-      return this.type === 0 ? '买入' : '卖出'
-    }
   },
   created() {
     this.getData()
@@ -154,43 +126,32 @@ export default {
       // queryUserInfo({token: this.token, uid: this.uid}).then(res => {
       //   this.exchangeAz = res.data.exchangeAz
       // })
-      getExchangeInfoList({type: 0, numType: 0, token: this.token}).then(res => {
-        console.log(res, "===111")
-      })
     },
     buySellClick(type) {
-      this.type = type
+      this.btnType = type
       this.buySellShow = true
     },
-    calculateTotal() {
-      let {totalNum, eachImt, az} = this.from
-      az = totalNum * eachImt
-      this.from.az = az
+    confirm(value) {
+      this.publishExchangeInfoMethod(value)
     },
-    cancel() {
-      this.from = {
-        totalNum: 0,
-        eachImt: 0,
-        az: 0
-      }
-    },
-    async confirm() {
+    publishExchangeInfoMethod(value) {
       let params = {
         token: this.token,
-        type: this.type,
+        type: this.btnType,
         uid: this.uid,
       }
-      params = Object.assign(params, {...this.from})
-      await publishExchangeInfo(params).then(res => {
-        console.log(res, "=====11111")
-        
+      params = Object.assign(params, {...value})
+      return publishExchangeInfo(params).then(res => {
+        if(res.status === 1000) {
+          Toast.success('买入成功');
+          this.$refs.buySellList.getExchangeInfoListMethod(0)
+        } else {
+          Toast.fail(res.desc);
+        }
       })
-      await getExchangeInfoList({type: 0, numType: 0, token: this.token}).then(res => {
-        console.log(res, "=====2222")
-      })
-    }
+    },
   }
-};
+}
 </script>
 <style lang="less" scoped>
 .trade-page {
@@ -265,10 +226,11 @@ export default {
 .btn1 {
   margin-right: 5%;
 }
-// .btn2 {
-//   background-image: linear-gradient(to right, #ee4635, #f09b21)
-// }
 .van-hairline--top-bottom::after {
   border-width: 0 0 1px 0;
+}
+.goods-list {
+  padding-bottom: 80px;
+  background-color: #fefefe;
 }
 </style>

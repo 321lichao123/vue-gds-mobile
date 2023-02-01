@@ -96,13 +96,13 @@ const router = new VueRouter({
                     path: '', //默认子路由
                     component: () => import('@/views/trade/trade.vue')
                 },
-                // {
-                //     path: '/todolist',
-                //     meta: {
-                //         requireAuth: false
-                //     },
-                //     component: () => import('@/views/todolist')
-                // },
+                {
+                    path: '/notice',
+                    meta: {
+                        requireAuth: false
+                    },
+                    component: () => import('@/views/notice/notice.vue')
+                },
                 // {
                 //     path: '/weather',
                 //     meta: {
