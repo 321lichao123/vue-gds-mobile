@@ -36,15 +36,9 @@
 </template>
 
 <script>
-import { Dialog, Form, Field, Stepper, } from 'vant'
 import { mapState } from 'vuex'
 export default {
-  components: {
-    [Dialog.name]: Dialog,
-    [Form.name]: Form,
-    [Field.name]: Field,
-    [Stepper.name]: Stepper,
-  },
+  components: {},
   data() {
     return {
       form: {

@@ -3,7 +3,9 @@ import Vuex from 'vuex';
 import {getItem,setItem} from '@/utils/storage'
 Vue.use(Vuex)
 // 响应动作的actions
-const USER_KEY="adk-user"
+const USER_KEY = "adk-user"
+const TOKEN_KEY = "token"
+const UID_KEY = "uid"
 
 const actions={
     setUser({commit},user){
@@ -11,6 +13,9 @@ const actions={
     },
     setToken({commit}, token) {
         commit('SETTOKEN', token)
+    },
+    setUid({commit}, uid) {
+        commit('SETUID', uid)
     }
 }
 
@@ -23,7 +28,11 @@ const mutations={
     },
     SETTOKEN(state, token) {
         state.token=token;
-        setItem(TOKEN_KEY,state.token)
+        setItem(TOKEN_KEY, state.token)
+    },
+    SETUID(state, uid) {
+        state.uid=uid;
+        setItem(UID_KEY, state.uid)
     },
     ADDCACHEPAGE(state,pageName){
         if(!state.cachePages.includes(pageName)){
@@ -42,8 +51,8 @@ const mutations={
 const state={
     user:getItem(USER_KEY),
     cachePages:['layout'],
-    token: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsYXlTaGVuIiwianRpIjoiMzcxMTI3OTQzIiwic3ViIjoiMzcxMTI3OTQzIiwiaWF0IjoxNjc1MTcwMDY4LCJleHAiOjE2NzUyNTY0Njh9.u_BoEcAMbCZ4rrmgoUnhRxicgV_TmoioirKb_j7HvHY',
-    uid: '371127943'
+    token: '',
+    uid: ''
 }
 
 const getters={

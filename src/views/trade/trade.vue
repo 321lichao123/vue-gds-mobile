@@ -87,19 +87,12 @@
   </div>
 </template>
 <script>
-import { Button, Tab, Tabs, Empty,  Toast, Sticky } from 'vant';
 import buySellList from './buySellList'
 import sellDialog from './sellDialog'
 import { getTopShow, queryUserInfo, publishExchangeInfo } from '@/request/api'
 import { mapState } from 'vuex'
 export default {
   components: {
-    [Button.name]: Button,
-    [Tab.name]: Tab,
-    [Tabs.name]: Tabs,
-    [Empty.name]: Empty,
-    [Toast.name]: Toast,
-    [Sticky.name]: Sticky,
     buySellList,
     sellDialog
   },

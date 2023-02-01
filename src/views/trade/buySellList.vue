@@ -49,13 +49,11 @@
   </div>
 </template>
 <script>
-import { Button } from 'vant';
 import { getExchangeInfoList } from '@/request/api'
 import { mapState } from 'vuex'
 import sellDialog from './sellDialog'
 export default {
   components: {
-    [Button.name]: Button,
     sellDialog
   },
   data() {

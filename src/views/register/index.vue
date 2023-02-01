@@ -1,5 +1,5 @@
 <template>
-  <div class="login-page">
+  <div class="register-page">
     <!-- <van-nav-bar title="登录" left-arrow @click-left="$router.back()" /> -->
     <van-image class="logo" round width="100" height="100" src="https://img01.yzcdn.cn/vant/cat.jpeg" />
     <!-- 表单 -->
@@ -59,7 +59,7 @@
             @finish="isCount = false"
             v-if="isCount"
             format="ss秒后可发送"
-            :time="1000 * 100"
+            :time="1000 * 60"
           />
           <span v-if="!isCount" @click.prevent="onSendsms">取验证码</span>
         </span>
@@ -79,7 +79,6 @@
       </van-field> -->
       <van-field
         class="form-item"
-        name="validCode"
         v-model="user.recommendUid"
       >
         <span slot="left-icon" style="color: #eaeff3">推荐码</span>
@@ -91,7 +90,7 @@
         class="login-btn"
         color="#01d561"
         type="primary"
-        @click="loginMethod"
+        @click="registerMethod"
       >登录</van-button>
     </div>
     <div class="download">我已经注册，立即下载APP</div>
@@ -134,7 +133,7 @@ export default {
             trigger: "onBlur",
           },
           {
-            pattern: /\d{6}$/,
+            pattern: /\d{4}$/,
             message: "请输入正确的验证码！",
             trigger: "onBlur",
           },
@@ -146,9 +145,9 @@ export default {
             trigger: "onBlur",
           },
           {
-            validator: (value, rule) => {
+            validator: (value) => {
               const { confirmPassword } = this.user
-              if(confirmPassword && value !== password) return false
+              if(confirmPassword && value !== confirmPassword) return false
             },
             message: '两次输入的密码不一致',
             trigger: 'onBlur'
@@ -161,7 +160,7 @@ export default {
             trigger: 'onBlur'
           },
           {
-            validator: (value, rule) => {
+            validator: (value) => {
               const { password } = this.user
               if(password && value !== password) return false
             },
@@ -180,7 +179,7 @@ export default {
     showPassword(type) {
       this[`showPasswordIcon${type}`] = !this[`showPasswordIcon${type}`]
     },
-    loginMethod() {
+    registerMethod() {
       Toast.loading({
         message: "登录中...",
         forbidClick: true, //禁止
@@ -189,35 +188,35 @@ export default {
       let {phone, validCode, password, recommendUid} = this.user
       regist({phone, validCode, password, recommendUid}).then(res => {
         Toast.success('注册成功')
-        this.$store.dispatch("setUser", data.data);
+        this.$store.dispatch("setUser", res.data);
         this.$store.dispatch('token')
         this.$router.push(this.$route.query.redirect || "/");
       }).catch(err => {
         Toast.fail(err.desc)
       })
     },
-    async onLogin() {
-      Toast.loading({
-        message: "登录中...",
-        forbidClick: true, //禁止
-        duration: 0,
-      });
-      try {
-        const { data } = await login(this.user);
-        Toast.success("登录成功！");
-        this.$store.dispatch("setUser", data.data);
+    // async onLogin() {
+    //   Toast.loading({
+    //     message: "登录中...",
+    //     forbidClick: true, //禁止
+    //     duration: 0,
+    //   });
+    //   try {
+    //     const { data } = await login(this.user);
+    //     Toast.success("登录成功！");
+    //     this.$store.dispatch("setUser", data.data);
 
-        // 跳转之前 清除页面缓存
-        this.$store.commit("REMOVECACHEPAGE", "layout");
+    //     // 跳转之前 清除页面缓存
+    //     this.$store.commit("REMOVECACHEPAGE", "layout");
 
-        // this.$router.back();
-        // 跳转回原来的页面
-        this.$router.push(this.$route.query.redirect || "/");
-      } catch (error) {
-        console.log(error);
-        Toast.fail("登录失败！");
-      }
-    },
+    //     // this.$router.back();
+    //     // 跳转回原来的页面
+    //     this.$router.push(this.$route.query.redirect || "/");
+    //   } catch (error) {
+    //     console.log(error);
+    //     Toast.fail("登录失败！");
+    //   }
+    // },
     onFailed(error) {
       if (error.errors[0]) {
         this.$toast({
@@ -226,41 +225,28 @@ export default {
         });
       }
     },
-    onSendsms() {
-      let params = {
-        phone: this.user.phone,
-        type: 0,
-      }
-      this.isCount = true;
-      sendCode(params).then(res => {
-        if(res.status === 1000) {
+    async onSendsms() {
+      try {
+        await this.$refs.loginForm.validate("phone");
+        let params = {
+          phone: this.user.phone,
+          type: 0,
         }
-      })
-      // 校验手机号之后再进行发送
-      // try {
-      //   await this.$refs["login-form"].validate("phone");
-      //   // 验证通过
-      //   await sendSms(this.user.phone);
-      //   this.isCount = true;
-      // } catch (error) {
-      //   let msg = "";
-      //   // 进行错误的判断
-      //   if (error && error.response && error.response.status == 429) {
-      //     msg = "发送太频繁了请稍后重试";
-      //   } else if (error.name == "phone") {
-      //     msg = error.message;
-      //   } else if (error.response.status == 404) {
-      //     msg = "手机号错误，请重新尝试";
-      //   } else {
-      //     msg = "未知错误，请重新尝试";
-      //   }
-      //   this.$toast({
-      //     message: msg,
-      //     position: "top",
-      //   });
-      // }
-      // // 让button关闭loading
-      // this.isloading = false;
+        this.isCount = true;
+        await sendCode(params).then(() => {
+          Toast.success('发送成功')
+        }).catch(err => {
+          Toast.fail(err.desc || '系统错误')
+        })
+      } catch(error) {
+          let msg = "";
+          if (error.name == "phone") {
+            msg = error.message;
+          }  else {
+            msg = "未知错误，请重新尝试";
+          }
+          Toast.fail(msg || '系统错误')
+      }
     },
   },
   beforeRouteEnter (to, from, next) {
@@ -277,7 +263,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-.login-page {
+.register-page {
   padding-top: 180px;
   height: 100vh;
   background-image: linear-gradient(#87aefb, #aac4ff);
@@ -286,6 +272,9 @@ export default {
     top: 60px;
     left: 50%;
     transform: translateX(-50%);
+  }
+  /deep/.van-cell::after {
+    display: none;
   }
   .form-item {
     margin: 0 auto 15px;
