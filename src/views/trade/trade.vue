@@ -91,6 +91,7 @@ import buySellList from './buySellList'
 import sellDialog from './sellDialog'
 import { getTopShow, queryUserInfo, publishExchangeInfo } from '@/request/api'
 import { mapState } from 'vuex'
+import { Toast } from 'vant'
 export default {
   components: {
     buySellList,
@@ -108,7 +109,7 @@ export default {
   computed: {
     ...mapState(['token', 'uid']),
   },
-  created() {
+  mounted() {
     this.getData()
   },
   methods: {
@@ -116,9 +117,9 @@ export default {
       getTopShow({}).then(res => {
         this.dayPriceObj = {...res.data}
       })
-      // queryUserInfo({token: this.token, uid: this.uid}).then(res => {
-      //   this.exchangeAz = res.data.exchangeAz
-      // })
+      queryUserInfo({token: this.token, uid: this.uid}).then(res => {
+        this.exchangeAz = res.data.exchangeAz
+      })
     },
     buySellClick(type) {
       this.btnType = type

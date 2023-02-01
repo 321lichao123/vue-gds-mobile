@@ -139,12 +139,11 @@ export default {
     loginMethod() {
       Toast.loading({
         message: "登录中...",
-        forbidClick: true, //禁止
+        forbidClick: true,
         duration: 0,
       });
       let {phone, validCode, password} = this.user
       login({phone, validCode, password, type: 0}).then(res => {
-        console.log(res, "----res");
         Toast.success('登录成功')
         // this.$store.dispatch("setUser", res.data);
         const {token, uid} = res.data
