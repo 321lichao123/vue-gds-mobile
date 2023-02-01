@@ -8,6 +8,9 @@ const USER_KEY="adk-user"
 const actions={
     setUser({commit},user){
         commit('SETUSER',user);
+    },
+    setToken({commit}, token) {
+        commit('SETTOKEN', token)
     }
 }
 
@@ -17,6 +20,10 @@ const mutations={
         state.user=user;
         // 需要进行持久化
         setItem(USER_KEY,state.user)
+    },
+    SETTOKEN(state, token) {
+        state.token=token;
+        setItem(TOKEN_KEY,state.token)
     },
     ADDCACHEPAGE(state,pageName){
         if(!state.cachePages.includes(pageName)){

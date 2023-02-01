@@ -21,7 +21,6 @@
         placeholder="密码"
         v-model="user.password"
         :type="showPasswordIcon1 ? 'text' : 'password'"
-        :right-icon="showPasswordIcon1 ? 'eye-o' : 'closed-eye'"
         :rules="formRules.password"
       >
         <van-icon
@@ -37,7 +36,6 @@
         placeholder="确认密码"
         v-model="user.confirmPassword"
         :type="showPasswordIcon2 ? 'text' : 'password'"
-        :right-icon="showPasswordIcon2 ? 'eye-o' : 'closed-eye'"
         :rules="formRules.confirmPassword"
       >
         <van-icon
@@ -51,7 +49,7 @@
         name="validCode"
         left-icon="comment"
         placeholder="验证码"
-        right-icon='eye-o'
+        autocomplete="off"
         v-model="user.validCode"
         :rules="formRules.validCode"
       >
@@ -112,7 +110,7 @@ export default {
         validCode: "",
         password: '',
         confirmPassword: '',
-        recommendUid: '84aoad48'
+        recommendUid: '371127943'
       },
       // 验证规则
       formRules: {
@@ -180,15 +178,22 @@ export default {
   },
   methods: {
     showPassword(type) {
-      // type === 1 ? (this.showPasswordIcon1 = !this.showPasswordIcon1) : (this.showPasswordIcon2 = !this.showPasswordIcon2)
       this[`showPasswordIcon${type}`] = !this[`showPasswordIcon${type}`]
     },
     loginMethod() {
+      Toast.loading({
+        message: "登录中...",
+        forbidClick: true, //禁止
+        duration: 0,
+      });
       let {phone, validCode, password, recommendUid} = this.user
       regist({phone, validCode, password, recommendUid}).then(res => {
-        if(res.status === 1000) {
-          Toast('注册成功')
-        }
+        Toast.success('注册成功')
+        this.$store.dispatch("setUser", data.data);
+        this.$store.dispatch('token')
+        this.$router.push(this.$route.query.redirect || "/");
+      }).catch(err => {
+        Toast.fail(err.desc)
       })
     },
     async onLogin() {
@@ -259,14 +264,14 @@ export default {
     },
   },
   beforeRouteEnter (to, from, next) {
-      next(vm=>{
-          if(vm.$store.state.user){
-              Toast('你已经登陆过了~');
-              next(from)
-          }else{
-              return true;
-          }
-      })
+    next(vm=>{
+        if(vm.$store.state.user){
+          Toast('你已经登陆过了~');
+          next(from)
+        }else{
+            return true;
+        }
+    })
   }
 };
 </script>
