@@ -6,7 +6,7 @@ import router from '@/router'
 
 
 if (process.env.NODE_ENV == 'development') {
-  axios.defaults.baseURL = 'http://117.50.163.32:8081/';
+  axios.defaults.baseURL = 'http://117.50.163.32:8080/';
 } else if (process.env.NODE_ENV == 'debug') {
   axios.defaults.baseURL = 'https://www.ceshi.com';
 } else if (process.env.NODE_ENV == 'production') {

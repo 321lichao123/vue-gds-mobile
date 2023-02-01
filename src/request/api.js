@@ -7,11 +7,13 @@ export const publishExchangeInfo = data => post('/IntegralServer/exchange/publis
 
 export const getTopShow  = data => get('IntegralServer/exchange/getTopShow', data)
 
-export const queryUserInfo = data => post('UserServer/user/queryUserInfo', data)
+export const queryUserInfo = data => post('IntegralServer/userInfo/getUserInfoByUid', data)
 
 // 用户登陆页面接口
 export const login = data => post('UserServer/user/login', data)
 
+export const loginByCode = data => post('IntegralServer/userInfo/loginByCode', data)
+
 export const sendCode = data => post('UserServer/user/sendCode', data)
 
-export const regist = data => post('UserServer/user/regist', data)
+export const regist = data => post('IntegralServer/userInfo/regist', data)

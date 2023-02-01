@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { login, sendCode } from '@/request/api'
+import { login, sendCode, loginByCode } from '@/request/api'
 import { Toast } from 'vant';
 export default {
   name: 'login',
@@ -143,16 +143,28 @@ export default {
         duration: 0,
       });
       let {phone, validCode, password} = this.user
-      login({phone, validCode, password, type: 0}).then(res => {
-        Toast.success('登录成功')
-        // this.$store.dispatch("setUser", res.data);
-        const {token, uid} = res.data
-        this.$store.dispatch('setToken', token)
-        this.$store.dispatch('setUid', uid)
-        this.$router.push(this.$route.query.redirect || "/");
-      }).catch(err => {
-        Toast.fail(err.desc || '系统错误')
-      })
+      let parmas = {phone, validCode, password, type: 0}
+      if(this.loginWay === 1) {
+        login(parmas).then(res => {
+          this.setUserInfo(res)
+        }).catch(err => {
+          Toast.fail(err.desc || '系统错误')
+        })
+      } else {
+        loginByCode(parmas).then(res => {
+          this.setUserInfo(res)
+        }).catch(err => {
+          Toast.fail(err.desc || '系统错误')
+        })
+      }
+    },
+    setUserInfo(res) {
+      Toast.success('登录成功')
+      // this.$store.dispatch("setUser", res.data);
+      const {token, uid} = res.data
+      this.$store.dispatch('setToken', token)
+      this.$store.dispatch('setUid', uid)
+      this.$router.push(this.$route.query.redirect || "/");
     },
     async onSendsms() {
       try {
