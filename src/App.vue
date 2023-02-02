@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import './styles/index.css';
+  // import './styles/index.css';
   import {mapState} from 'vuex';
   export default {
     name: 'App',
