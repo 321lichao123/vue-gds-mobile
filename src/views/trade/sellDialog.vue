@@ -72,7 +72,7 @@ export default {
       this.cancel()
     },
     cancel() {
-      this.from = {
+      this.form = {
         totalNum: 0,
         eachImt: 0,
         az: 0

@@ -69,6 +69,13 @@
         type="primary"
         @click="loginMethod"
       >登录</van-button>
+      <van-button
+        block
+        class="login-btn"
+        color="#01d561"
+        type="primary"
+        @click="toRegister"
+      >去注册</van-button>
     </div>
   </div>
 </template>
@@ -136,6 +143,9 @@ export default {
         });
       }
     },
+    toRegister() {
+      this.$router.push('/register');
+    },
     loginMethod() {
       Toast.loading({
         message: "登录中...",
@@ -148,13 +158,15 @@ export default {
         login(parmas).then(res => {
           this.setUserInfo(res)
         }).catch(err => {
-          Toast.fail(err.desc || '系统错误')
+          const errorMessage = err ? err.desc : '系统错误'
+          Toast.fail(errorMessage)
         })
       } else {
         loginByCode(parmas).then(res => {
           this.setUserInfo(res)
         }).catch(err => {
-          Toast.fail(err.desc || '系统错误')
+          const errorMessage = err ? err.desc : '系统错误'
+          Toast.fail(errorMessage)
         })
       }
     },
@@ -164,6 +176,7 @@ export default {
       const {token, uid} = res.data
       this.$store.dispatch('setToken', token)
       this.$store.dispatch('setUid', uid)
+      console.log(this.$route.query.redirect, '----this.$route.query.redirect');
       this.$router.push(this.$route.query.redirect || "/");
     },
     async onSendsms() {
@@ -249,6 +262,7 @@ export default {
     width: 80%;
     margin: 0 auto;
     button {
+      margin-bottom: 15px;
       border-radius: 5px;
     }
   }

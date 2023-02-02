@@ -40,7 +40,7 @@
       </div>
       <div class="current-balance">
         <span>可用余额</span>
-        <span class="balance">0.95GT</span>
+        <span class="balance">{{exchangeAz}}</span>
       </div>
       <div class="trade-button">
         <van-button
@@ -122,6 +122,9 @@ export default {
       })
     },
     buySellClick(type) {
+      if(type === 1) {
+        return Toast('此功能暂时不支持')
+      }
       this.btnType = type
       this.buySellShow = true
     },

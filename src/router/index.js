@@ -23,9 +23,6 @@ const router = new VueRouter({
         {
             path: '/login',
             name: 'login',
-            meta: {
-                requireAuth: false
-            },
             component: () => import('@/views/login')
         },
         {
@@ -89,7 +86,7 @@ const router = new VueRouter({
         {
             path: '/',
             meta: {
-                requireAuth: false
+                requireAuth: true
             },
             component: () => import('@/views/layout'),
             children: [{
@@ -113,7 +110,7 @@ const router = new VueRouter({
                 {
                     path: '/userprofile',
                     meta: {
-                        requireAuth: false
+                        requireAuth: true
                     },
                     component: () => import('@/views/newUserprofile/userprofile')
                 }
@@ -124,10 +121,11 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     if (to.meta.requireAuth) {
-        if (store.state.user) {
+        if (store.state.token) {
             next();
         } else {
             Toast('请登录后访问')
+            next('/login')
         }
     } else {
         next();

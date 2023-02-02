@@ -28,25 +28,22 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   response => {
-    // 如果返回的状态码为200，说明接口请求成功，可以正常拿到数据     
-    // 否则的话抛出错误
+    console.log(response, '---response');
     if (response.data.status === 1000) {
         return Promise.resolve(response);
     } else {
+        console.log(1111);
         return Promise.reject(response);
     }
   },
-  // 服务器状态码不是2开头的的情况
-  // 这里可以跟你们的后台开发人员协商好统一的错误状态码    
-  // 然后根据返回的状态码进行一些操作，例如登录过期提示，错误提示等等
-  // 下面列举几个常见的操作，其他需求可自行扩展
   error => {
+    console.log(error.data.status, '-----error.data.status');
     if (error.data.status) {
       switch (error.data.status) {
         // 401: 未登录
         // 未登录则跳转登录页面，并携带当前页面的路径
         // 在登录成功后返回当前页面，这一步需要在登录页操作。
-        case 401:
+        case 1014:
           router.replace({
               path: '/login',
               query: { 
@@ -60,9 +57,11 @@ axios.interceptors.response.use(
             duration: 1000,
             forbidClick: true
           });
-          // 清除token
+          // 清除数据
           localStorage.removeItem('token');
-          store.commit('loginSuccess', null);
+          localStorage.removeItem('uid');
+          localStorage.removeItem('user-info');
+          // store.commit('loginSuccess', null);
           // 跳转登录页面，并将要浏览的页面fullPath传过去，登录成功后跳转需要访问的页面 
           setTimeout(() => {
             router.replace({
@@ -85,10 +84,11 @@ axios.interceptors.response.use(
         // 其他错误，直接抛出错误提示
         default:
           Toast({
-              message: error.data.desc,
-              duration: 1500,
-              forbidClick: true
+            message: error.data.desc || '系统错误',
+            duration: 1500,
+            forbidClick: true
           });
+        break;
       }
       return Promise.reject(error.data);
     }

@@ -6,6 +6,7 @@ Vue.use(Vuex)
 const USER_KEY = "adk-user"
 const TOKEN_KEY = "token"
 const UID_KEY = "uid"
+const USER_INFO_KEY = 'user-info'
 
 const actions={
     setUser({commit},user){
@@ -16,6 +17,9 @@ const actions={
     },
     setUid({commit}, uid) {
         commit('SETUID', uid)
+    },
+    setUserInfo({commit}, userInfo) {
+        commit('SETUSERINFO', userInfo)
     }
 }
 
@@ -34,6 +38,10 @@ const mutations={
         state.uid=uid;
         setItem(UID_KEY, state.uid)
     },
+    SETUSERINFO(state, userInfo) {
+        state.userInfo = userInfo
+        setItem(USER_INFO_KEY, state.userInfo)
+    },
     ADDCACHEPAGE(state,pageName){
         if(!state.cachePages.includes(pageName)){
             state.cachePages.push(pageName);
@@ -51,8 +59,9 @@ const mutations={
 const state={
     user:getItem(USER_KEY),
     cachePages:['layout'],
-    token: '',
-    uid: ''
+    token: getItem(TOKEN_KEY),
+    uid: getItem(UID_KEY),
+    userInfo: getItem(USER_INFO_KEY)
 }
 
 const getters={

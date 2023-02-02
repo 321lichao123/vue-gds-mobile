@@ -14,7 +14,7 @@
     </div>
     <div class="goods-list" v-for="(item, index) in dataSource" :key="index">
       <div class="goods-left">
-        <div class="goods-code goods-title">{{uid.slice(-4)}}</div>
+        <div class="goods-code goods-title">{{userCode}}</div>
         <div class="goods-infos">
           <div>
             <div class="goods-count">{{item.totalNum || 0}}</div>
@@ -42,16 +42,18 @@
       </div>
     </div>
     <sellDialog 
-      :btnType="btnType"
+      :btnType="2"
       :buySellShow.sync="buySellShow"
-      :sellMaxNum="sellMaxNum"
+      :sellMaxNum="sellObj.totalNum"
+      @confirm='confirm'
     />
   </div>
 </template>
 <script>
-import { getExchangeInfoList } from '@/request/api'
+import { getExchangeInfoList, chargeImtOrAZ } from '@/request/api'
 import { mapState } from 'vuex'
 import sellDialog from './sellDialog'
+import { Toast } from 'vant'
 export default {
   components: {
     sellDialog
@@ -67,7 +69,8 @@ export default {
       ],
       dataSource: [],
       buySellShow: false,
-      sellMaxNum: 0
+      // sellMaxNum: 0,
+      sellObj: {}
     };
   },
   props: ['btnType'],
@@ -82,6 +85,9 @@ export default {
       return function(val) {
         return {color: this.numType === val ? '#dbfbfd' : '#686868'}
       }
+    },
+    userCode() {
+      return this.uid && this.uid.toString().slice(-4)
     }
   },
   created() {
@@ -93,7 +99,9 @@ export default {
       this.getExchangeInfoListMethod()
     },
     sellBtn(record) {
-      this.sellMaxNum = record.totalNum
+      // this.buyUid = record.uid
+      // this.sellMaxNum = record.totalNum
+      this.sellObj = {...record}
       this.buySellShow = true
     },
     getExchangeInfoListMethod() {
@@ -106,6 +114,26 @@ export default {
         if(res.status === 1000) {
           this.dataSource = res.data
         }
+      })
+    },
+    confirm(value) {
+      const {uid: buyUid, id: eId} = this.sellObj
+      let params = {
+        token: this.token,
+        type: 1,
+        numType: this.numType,
+        buyUid,
+        sellUid: this.uid,
+        eId,
+        az: value.totalNum
+      }
+      chargeImtOrAZ(params).then(res => {
+        if(res.status === 1000) {
+          Toast.success('交易成功')
+          this.getExchangeInfoListMethod()
+        }
+      }).catch(err => {
+        Toast.fail(err.desc)
       })
     }
   }

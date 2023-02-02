@@ -91,7 +91,7 @@
         color="#01d561"
         type="primary"
         @click="registerMethod"
-      >登录</van-button>
+      >注册</van-button>
     </div>
     <div class="download">我已经注册，立即下载APP</div>
   </div>
