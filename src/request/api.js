@@ -30,3 +30,6 @@ export const getSelfExchangeInfoList = data => post('IntegralServer/exchange/get
 export const queryTranslationRecordList = data => post('IntegralServer/exchange/queryTranslationRecordList', data)
 
 export const sendImt2Buyer = data => post('IntegralServer/acceptance/sendImt2Buyer', data)
+
+// 回收页面接口
+export const recycleAz = data => post('IntegralServer/exchange/recycleAz', data)

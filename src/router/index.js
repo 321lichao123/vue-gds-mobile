@@ -112,7 +112,14 @@ const router = new VueRouter({
                     meta: {
                         requireAuth: true
                     },
-                    component: () => import('@/views/newUserprofile/userprofile')
+                    component: () => import('@/views/newUserprofile/userprofile.vue')
+                },
+                {
+                    path: '/recycle',
+                    meta: {
+                        requireAuth: true
+                    },
+                    component: () => import('@/views/recycle/recycle.vue')
                 }
             ]
         }

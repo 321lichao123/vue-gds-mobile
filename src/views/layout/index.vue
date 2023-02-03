@@ -7,15 +7,15 @@
         <van-tabbar class="tabbar" v-model="active" route>
             <van-tabbar-item to='/'>
                 <template #icon>
-                    <i class="iconfont icon-fangzi"></i>
+                    <i class="iconfont icon-gaiicon-"></i>
                 </template>
-                置换中心
+                交易中心
             </van-tabbar-item>
-            <van-tabbar-item to='/notice'>
+            <van-tabbar-item to='/recycle'>
                 <template #icon>
-                    <i class="iconfont icon-gonggao"></i>
+                    <i class="iconfont icon-huishou"></i>
                 </template>
-                公告
+                回收
             </van-tabbar-item>
             <van-tabbar-item to='/userprofile'>
                 <template #icon>
@@ -48,7 +48,13 @@
 <style scoped lang="less">
 .tabbar{
     /deep/ .iconfont{
-        font-size: 12px !important;
+        font-size: 24px;
+    }
+    .icon-gaiicon- {
+        font-size: 18px;
+    }
+    .icon-31wode {
+        font-size: 20px;
     }
 }
 

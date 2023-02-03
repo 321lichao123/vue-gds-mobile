@@ -6,6 +6,55 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "11441219",
+      "name": "收付款",
+      "font_class": "shoufukuan1",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "577335",
+      "name": "订单",
+      "font_class": "dingdan",
+      "unicode": "e737",
+      "unicode_decimal": 59191
+    },
+    {
+      "icon_id": "683408",
+      "name": "交易记录",
+      "font_class": "jiaoyijilu",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "996111",
+      "name": "回收",
+      "font_class": "huishou",
+      "unicode": "e672",
+      "unicode_decimal": 58994
+    },
+    {
+      "icon_id": "3279336",
+      "name": "交易中心",
+      "font_class": "gaiicon-",
+      "unicode": "e6cf",
+      "unicode_decimal": 59087
+    },
+    {
+      "icon_id": "6572211",
+      "name": "发布",
+      "font_class": "fabu1",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "11465027",
+      "name": "收付款",
+      "font_class": "shoufukuan",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
       "icon_id": "201228",
       "name": "3.1我的",
       "font_class": "31wode",

@@ -36,23 +36,23 @@
         </van-cell> -->
         <van-cell title="收付款方式" is-link @click="openDialog(1)">
           <template #icon>
-            <i class="iconfont icon-fukuan"></i>
+            <i class="iconfont icon-shoufukuan1"></i>
           </template>
         </van-cell>
         <van-cell title="置换发布" is-link @click="openDialog(2)">
           <template #icon>
-            <i class="iconfont icon-fukuan"></i>
+            <i class="iconfont icon-fabu1"></i>
           </template>
         </van-cell>
         <van-cell title="置换订单" is-link @click="openDialog(3)">
           <template #icon>
-            <i class="iconfont icon-fukuan"></i>
+            <i class="iconfont icon-dingdan"></i>
           </template>
         </van-cell>
         <div v-if="userInfo.role === 2">
           <van-cell title="承兑发布" is-link @click="openDialog(4)">
             <template #icon>
-              <i class="iconfont icon-fukuan"></i>
+              <i class="iconfont icon-fabu"></i>
             </template>
           </van-cell>
           <van-cell title="承兑订单" is-link @click="openDialog(5)">
@@ -61,14 +61,9 @@
             </template>
           </van-cell>
         </div>
-        <!-- <van-cell title="我的发布的" is-link>
-          <template #icon>
-            <i class="iconfont icon-fabu"></i>
-          </template>
-        </van-cell> -->
         <van-cell title="交易订单" is-link>
           <template #icon>
-            <i class="iconfont icon-jiaoyirizhi"></i>
+            <i class="iconfont icon-dingdan"></i>
           </template>
         </van-cell>
         <van-cell title="CC手续费" is-link>
@@ -83,7 +78,7 @@
       </van-cell-group>
     </div>
     <vant-dialog
-      :dialogObj.sync="dialogObj"
+      :title.sync="title"
       :dialogVisible.sync="dialogVisible"
     >
       <div v-if="showDialogContent('payWaySlot')">
@@ -248,7 +243,7 @@
                 round
                 size="small"
                 color='linear-gradient(to right, #ee4635, #f09b21)'
-                @click="sellBtn(item)"
+                @click="refuseSell(item)"
               >拒绝</van-button>
             </div>
           </div>
@@ -280,6 +275,7 @@ export default {
       showImages: [],
       slotName: '',
       dialogObj: {},
+      title: '',
       loading: false,
       finished: false,
       list: [],
@@ -336,6 +332,7 @@ export default {
       }
       this.list = []
       this.loading = true
+      this.title = map[key].title
       this.dialogObj = map[key]
       this.onLoad(key)
       this.dialogVisible =true
@@ -369,14 +366,12 @@ export default {
           } else {
             this.replaceListObj[this.activeBuyWay].list.push(...res.data)
           }
+          this.loading = false;
+          // 数据全部加载完成
+          if(this.replaceListObj[this.activeBuyWay].list.length >= res.total) {
+            this.replaceListObj[this.activeBuyWay].finished = true;
+          }
           console.log(this.replaceListObj, '---this.replaceListObj');
-        }
-      }).finally(() => {
-        this.loading = false;
-        // 数据全部加载完成
-        const obj = this.replaceListObj[this.activeBuyWay]
-        if(!obj.list.length) {
-          obj.finished = true;
         }
       })
     },
@@ -413,6 +408,9 @@ export default {
           this.queryPurchaseListMethod()
         }
       })
+    },
+    refuseSell(record) {
+
     }
   }
 };
@@ -454,6 +452,7 @@ export default {
     font-weight: 600;
     .iconfont {
       margin-right: 10px;
+      font-size: 24px;
     }
   }
   /deep/ .van-cell-group--inset {

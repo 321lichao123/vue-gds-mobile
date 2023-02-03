@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-dialog
-      :title="dialogObj.title"
+      :title="title"
       confirmButtonText="关闭"
       confirmButtonColor="#323233"
       v-model="openCloseDialog"
@@ -20,10 +20,10 @@ export default {
     }
   },
   props: {
-    dialogObj: {
+    title: {
       required: true,
-      type: Object,
-      default: () => {}
+      type: String,
+      default: ''
     },
     dialogVisible: {
       required: true,
