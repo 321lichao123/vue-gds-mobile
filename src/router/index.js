@@ -132,7 +132,11 @@ router.beforeEach((to, from, next) => {
             next();
         } else {
             Toast('请登录后访问')
-            next('/login')
+            next({
+                path: '/login',
+                query: {redirect: to.fullPath}
+            })
+            
         }
     } else {
         next();
