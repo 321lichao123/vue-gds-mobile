@@ -31,5 +31,7 @@ export const queryTranslationRecordList = data => post('IntegralServer/exchange/
 
 export const sendImt2Buyer = data => post('IntegralServer/acceptance/sendImt2Buyer', data)
 
+export const refusePurchase = data => post('IntegralServer/acceptance/refusePurchase', data)
+
 // 回收页面接口
 export const recycleAz = data => post('IntegralServer/exchange/recycleAz', data)

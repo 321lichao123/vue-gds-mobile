@@ -256,11 +256,25 @@
       :showIndex='false'
       @onClose="closeShowImg"
     />
+    <van-dialog 
+      title="拒绝理由"
+      show-cancel-button
+      v-model="refuseVisisble" 
+      :before-close="confirm"
+      @close="close"
+    >
+      <van-field
+        v-model="refuseRemark"
+        type="textarea"
+        label="拒绝理由" 
+        placeholder="请输入拒绝理由" 
+      />
+    </van-dialog>
   </div>
 </template>
 <script>
 import vantDialog from "@/components/vantDialog.vue";
-import { queryUserInfo, getSelfExchangeInfoList, queryAcceptancePubListBySelf, queryPurchaseList, queryTranslationRecordList, sendImt2Buyer } from '@/request/api'
+import { queryUserInfo, getSelfExchangeInfoList, queryAcceptancePubListBySelf, queryPurchaseList, queryTranslationRecordList, sendImt2Buyer, refusePurchase } from '@/request/api'
 import { mapState } from 'vuex'
 import { Toast } from 'vant';
 export default {
@@ -285,7 +299,10 @@ export default {
       replaceListObj: {
         0: {list: [], finished: false},
         1: {list: [], finished: false},
-      }
+      },
+      refuseVisisble: false,
+      refuseRemark: '',
+      refuseObj: {}
     };
   },
   mounted() {
@@ -410,7 +427,33 @@ export default {
       })
     },
     refuseSell(record) {
-
+      this.refuseVisisble = true
+      this.refuseObj = {...record}
+    },
+    confirm(action, done) {
+      if(!this.refuseRemark) {
+        done(false)
+        return Toast.fail('请输入拒绝理由')
+      }
+      refusePurchase({
+        token: this.token,
+        remark: this.refuseRemark,
+        acceptanceExchangeId: this.refuseObj.id,
+        acceptanceId: this.refuseObj.acceptanceId
+      }).then(res => {
+        if(res.status === 1000) {
+          Toast.success('操作成功')
+          this.queryPurchaseListMethod()
+          this.close()
+        }
+      }).catch(err => {
+        done(false)
+        Toast.fail(err.desc)
+      }) 
+    },
+    close() {
+      this.refuseVisisble = false
+      this.refuseObj = {}
     }
   }
 };
@@ -460,6 +503,8 @@ export default {
   }
   /deep/.van-dialog__content {
     padding: 0 20px;
+    max-height: 500px;
+    overflow-y: auto;
   }
   .pay-box {
     // padding: 0 20px;
